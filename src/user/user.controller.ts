@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/user.dto';
 
@@ -25,6 +25,18 @@ export class UserController {
       statusCode: 200,
       message: 'Users retrieved successfully',
       users,
+    };
+  }
+
+  @Get(':id')
+  async findUserById(@Param('id') id: string) {
+    const user = await this.userService.findUserById(id);
+
+    return {
+      result: 'success',
+      statusCode: 200,
+      message: 'Users retrieved successfully',
+      user,
     };
   }
 }

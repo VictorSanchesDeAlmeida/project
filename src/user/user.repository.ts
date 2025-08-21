@@ -1,29 +1,57 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/user.dto';
+import { CreateUserDto, ResponseUserDto } from './dto/user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from '@prisma/client';
 
 @Injectable()
 export class UserRepository {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: CreateUserDto): Promise<User> {
-    const user = await this.prisma.user.create({
+  async create(data: CreateUserDto): Promise<ResponseUserDto> {
+    const user = await this.prisma.users.create({
       data,
+      select: {
+        id: true,
+        email: true,
+        name: true,
+      },
     });
 
     return user;
   }
 
-  async findAll(): Promise<User[]> {
-    const users = await this.prisma.user.findMany();
+  async findAll(): Promise<ResponseUserDto[]> {
+    const users = await this.prisma.users.findMany({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+      },
+    });
     return users;
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    const user = await this.prisma.user.findUnique({
+  async findByEmail(email: string): Promise<ResponseUserDto | null> {
+    const user = await this.prisma.users.findUnique({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+      },
       where: { email },
     });
+    return user;
+  }
+
+  async findById(id: number): Promise<ResponseUserDto | null> {
+    const user = await this.prisma.users.findUnique({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+      },
+      where: { id },
+    });
+
     return user;
   }
 }
